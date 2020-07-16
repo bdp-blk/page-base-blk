@@ -1,0 +1,12 @@
+{
+  "name": "base-page-blk",
+  "version": "1.0.0",
+  "description": "基本页面设置",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "samy <123@gmail.com>",
+  "license": "ISC"
+}
