@@ -1,0 +1,39 @@
+.apiMgt {
+  height: 100%;
+  .title {
+    padding-left: 10px;
+    padding-right: 10px;
+    line-height: 48px;
+    font-size: 14px;
+    border-bottom: 1px solid @border-color-base;
+    color: rgba(0, 0, 0, 1);
+    box-sizing: border-box;
+    height: 48px;
+    overflow: hidden;
+  }
+  .main {
+    height: calc(100% - 48px - 40px);
+    display: flex;
+  }
+  .left {
+    width: 210px;
+    height: 100%;
+    border-right: 1px solid @border-color-base;
+  
+    .categoryTreeBox {
+      height: calc(100% - 36px);
+      .categotyTreeStyle {
+        height: 100%;
+      }
+      .treeBoxClass {
+        height: calc(100% - 25px);
+        overflow: auto;
+      }
+    }
+  }
+
+  .right {
+    flex: 1;
+    overflow: auto;
+  }
+}
