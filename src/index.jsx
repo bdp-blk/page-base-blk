@@ -22,19 +22,6 @@ class Index extends Base {
     this.state = {};
   }
 
-  getRefData() {
-    const {
-      form: { validateFieldsAndScroll },
-    } = this.props;
-    let data;
-    validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        data = values;
-      }
-    });
-    return data;
-  }
-
   render() {
     return (
       <div className={styles.index}>
