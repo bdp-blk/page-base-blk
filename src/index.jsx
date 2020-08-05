@@ -1,64 +1,46 @@
 /**
  * @author samy
  * @email samyzhg#qq.com
- * @create date 2020-07-17 10:04:34
- * @modify date 2020-07-17 10:04:34
+ * @create date 2020-08-05 16:08:09
+ * @modify date 2020-08-05 16:08:09
  * @desc 头左右部分
  */
-import React, { Component } from "react";
-import { connect } from "dva";
-import { Form } from "antd";
-import styles from "./index.less";
-import { handleResponse } from "../utils/utils";
+import React from 'react';
+import { connect } from 'dva';
+import { Form } from 'antd';
+import styles from './index.less';
+import Base from '@<%=proName%>/base/BaseSub';
 
-// const formItemLayout = {
-//   labelCol: { span: 8 },
-//   wrapperCol: { span: 8 },
-// };
-
-@connect(({ apiMgt, loading }) => ({
-  ...apiMgt,
-  loading: !!loading.effects["apiMgt/test"],
+@connect(({ <%=moduleName%>, loading }) => ({
+  <%=moduleName%>,
+  loading: !!loading.effects['<%=moduleName%>/test'],
 }))
 @Form.create()
-class Index extends Component {
+class Index extends Base {
   constructor(props) {
     super(props);
     this.state = {};
   }
 
-  componentDidMount() {
-    this.initData();
-    this.getData();
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  getRefData() {}
-
-  // eslint-disable-next-line class-methods-use-this
-  initData() {}
-
-  getData() {
-    // this.test();
-  }
-
-  test() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: "apiMgt/test",
-    }).then((res) => {
-      const { isSuccess, data } = handleResponse(res);
-      if (isSuccess && data) {
-        console.log(data);
+  getRefData() {
+    const {
+      form: { validateFieldsAndScroll },
+    } = this.props;
+    let data;
+    validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        data = values;
       }
     });
+    return data;
   }
 
   render() {
     return (
-      <div className={styles.apiMgt}>
+      <div className={styles.index}>
+        {/* <Card title="关联脚本" bordered={false} /> */}
         <div className={styles.title}>
-          <span>API管理</span>
+          <span>基础页面</span>
         </div>
         <div className={styles.main}>
           <div className={styles.left} />
