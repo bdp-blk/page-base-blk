@@ -9,7 +9,7 @@ import React from 'react';
 import { connect } from 'dva';
 import { Form, Spin } from 'antd';
 import styles from './index.less';
-import Base from '@<%=proName%>/base/BaseSub';
+import { BaseSub as Base } from '@<%=proName%>/base';
 
 @connect(({ <%=moduleName%>, loading }) => ({
   <%=moduleName%>,
@@ -27,9 +27,7 @@ class Index extends Base {
       <div className={styles.index}>
         <Spin spinning={loading} className={styles.spinStyle} />
         {/* <Card title="关联脚本" bordered={false} /> */}
-        <div className={styles.title}>
-          <span>基础页面</span>
-        </div>
+        <div className={styles.title}>基础页面</div>
         <div className={styles.main}>
           <div className={styles.left} />
           <div className={styles.right} />
