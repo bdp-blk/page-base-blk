@@ -40,11 +40,11 @@ module.exports = function askCreator(template = "") {
         }
         done(null, true);
       },
-    },,
+    },
     {
       type: "input",
       name: "name",
-      message: "页面名Title(cn)",
+      message: "页面名标题(cn)",
       default: '表单及目录示范',
     },
   ];
