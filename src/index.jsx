@@ -16,6 +16,7 @@ import moment from 'moment';
 import { getPlaceholder } from '@/bdpcloud/utils/utils';
 import CommonFilter from '@/bdpcloud/components/CommonFilter';
 import router from 'umi/router';
+import classnames from 'classnames';
 
 @connect(({ <%=moduleName%>, loading }) => ({
   <%=moduleName%>,
@@ -332,7 +333,7 @@ class Index extends Base {
               onExpanedCallBack={this.handleExpand}
               extra={
                 <Fragment>
-                  <Button type="primary" onClick={() => {}}>
+                  <Button className={classnames("margin-left-10")} type="primary" onClick={() => {}}>
                     导出
                   </Button>
                 </Fragment>
@@ -341,23 +342,23 @@ class Index extends Base {
               // advancedExtra={ }
               // advancedItem={[]}
             >
-               <Button onClick={() => {this.getList({})}}>
-                    刷新
-                  </Button>
-                <Form.Item {...this.formItemLayout}>
-                  {getFieldDecorator('name')(
-                    <Input.Search
-                      onSearch={() => this.handleSearch()}
-                      onPressEnter={() => this.handleSearch()}
-                      placeholder={getPlaceholder(
-                        formatMessage({
-                          id: '<%=moduleName%>.name',
-                          defaultMessage: '名称',
-                        })
-                      )}
-                    />
-                  )}
-                </Form.Item>
+              <Button onClick={() => {this.getList({})}}>
+                  刷新
+              </Button>
+              <Form.Item {...this.formItemLayout}>
+                {getFieldDecorator('name')(
+                  <Input.Search
+                    onSearch={() => this.handleSearch()}
+                    onPressEnter={() => this.handleSearch()}
+                    placeholder={getPlaceholder(
+                      formatMessage({
+                        id: '<%=moduleName%>.name',
+                        defaultMessage: '名称',
+                      })
+                    )}
+                  />
+                )}
+              </Form.Item>
               <Form.Item {...this.formItemLayout} label="类型">
                 {getFieldDecorator('type', {
                   rules: [{ required: false }],
