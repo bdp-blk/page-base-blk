@@ -1,19 +1,51 @@
 .index {
   height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.tableHeight {
-  flex: 1 0;
-  overflow: hidden;
-  .ellipsis {
+  .title {
+    padding-left: 20px;
+    padding-right: 20px;
+    line-height: 56px;
+    height: 56px;
+    font-size: 14px;
+    border-bottom: 1px solid @border-color-base;
+    color: rgba(0, 0, 0, 0.85);
+    font-weight: 500;
     overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
-}
+  .main {
+    height: calc(100% - 56px);
+    display: flex;
+  }
 
-.dateStyle {
-  width: 100% !important;
+  :global {
+    .ant-card-body {
+      height: 100%;
+    }
+    .ant-card-extra {
+      padding: 0;
+    }
+  }
+
+  .left {
+    width: 210px;
+    height: 100%;
+    border-right: 1px solid @border-color-base;
+    // .categoryTreeBox {
+    //   height: calc(100% - 36px);
+    //   .categotyTreeStyle {
+    //     height: 100%;
+    //   }
+    //   .treeBoxClass {
+    //     height: calc(100% - 25px);
+    //     overflow: auto;
+    //   }
+    // }
+  }
+
+  .right {
+    flex: 1;
+    overflow: auto;
+  }
 }
