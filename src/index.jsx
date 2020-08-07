@@ -194,7 +194,7 @@ class Index extends Base {
     );
   };
 
-  getList = (pageInfo, resetFlag) => {
+  getList = (pageInfo = {}, resetFlag) => {
     const {
       dispatch,
       form: { getFieldsValue, resetFields },
