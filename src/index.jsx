@@ -534,7 +534,7 @@ class Index extends Base {
               <Form.Item
                 {...this.formItemLayout}
                 label={formatMessage({
-                  id: '<%=moduleName%>.name',
+                  id: '<%=moduleName%>.type',
                   defaultMessage: '类型',
                 })}
               >
