@@ -44,8 +44,80 @@
     // }
   }
 
+  .cardBg {
+    background-color: #fafafa;
+  }
+
+  .flexLayout {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
   .right {
     flex: 1;
     overflow: auto;
+
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    .itemTitle {
+      font-size: @heading-4-size;
+      font-weight: bold;
+      flex: 1 0;
+      width: 1px;
+      padding-right: 10px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .cardBody {
+      margin-top: 20px;
+      min-height: 105px;
+      tr {
+        > td:nth-child(1) {
+          white-space: nowrap;
+        }
+        > td:nth-child(2) {
+          padding: 0 8px;
+        }
+        > td:nth-child(3) {
+          color: rgba(0, 0, 0, 0.45);
+          word-break: break-all;
+        }
+      }
+      .typeColor {
+        color: #1890ff !important;
+      }
+
+      .cardLabel {
+        width: 64px;
+        display: inline-flex;
+        justify-content: space-between;
+        padding-right: 7px;
+        margin-top: 11px;
+        color: @text-color;
+      }
+    }
+
+    .viewCard {
+      width: 100%;
+      > div {
+        width: 100%;
+      }
+    }
+  }
+  .iconHover {
+    font-size: 16px;
+  }
+
+  .iconHover:hover {
+    color: @primary-color;
+  }
+
+  .handoverIcon {
+    color: @primary-color;
+    font-size: 22px;
   }
 }
