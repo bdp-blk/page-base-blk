@@ -291,8 +291,8 @@ class Index extends Base {
   };
 
   handleExpand = () => {
-    if (this.tableRef && this.tableRef.getScrollY) {
-      this.tableRef.getScrollY();
+    if (this.ExpandTable && this.ExpandTable.getScrollY) {
+      this.ExpandTable.getScrollY();
     }
   };
 
@@ -308,7 +308,7 @@ class Index extends Base {
 
   getIsOnlineValue = () => {
     const { dataList } = this.state;
-    const { checkKeysList } = this.childCard.state;
+    const { checkKeysList } = this.CardList.state;
     for (let i = 0; i < checkKeysList.length; i++) {
       if (_.some(dataList, { rowId: checkKeysList[i], status: '1000' })) {
         return true;
@@ -599,13 +599,17 @@ class Index extends Base {
                       this.setState({ selectedRow: record });
                     },
                   })}
-                  ref={ref => {
-                    this.tableRef = ref;
+                  ref={v => {
+                    this.ExpandTable = v;
                   }}
                 />
               ) : (
                 <CardList
                   rowId="rowId"
+                  loading={loading}
+                  showFooter={true}
+                  dataSource={listInfo.list}
+                  mulitBtnList={this.mulitBtnList()}
                   addCardProps={{
                     addText: formatMessage({ id: 'COMMON_ADD', defaultMessage: '新增' }),
                     addCard: true,
@@ -613,10 +617,6 @@ class Index extends Base {
                       this.goToAdd('0');
                     },
                   }}
-                  loading={loading}
-                  showFooter={true}
-                  dataSource={listInfo.list}
-                  mulitBtnList={this.mulitBtnList()}
                   pagination={{
                     ...listInfo.pagination,
                     showSelectInf: editState,
@@ -624,8 +624,8 @@ class Index extends Base {
                     showSizeChanger: true,
                     onChange: this.onPageChange,
                   }}
-                  Refs={c => {
-                    this.childCard = c;
+                  Refs={v => {
+                    this.CardList = v;
                   }}
                   callbackFunc={() => {
                     this.setState({
