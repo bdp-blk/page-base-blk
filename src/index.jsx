@@ -14,8 +14,11 @@ import { CategoryTree, ExpandTable, MyIcon, CardList, CardsSelect } from '@/bdpc
 import { formatMessage } from 'umi/locale';
 import moment from 'moment';
 import { getPlaceholder } from '@/bdpcloud/utils/utils';
-import AdvancedFilter from '@/bdpcloud/components/AdvancedFilter';
+// import AdvancedFilter from '@/bdpcloud/components/AdvancedFilter';
+import CommonFilter from '@/bdpcloud/components/CommonFilter';
 import router from 'umi/router';
+import classnames from 'classnames';
+import _ from 'lodash';
 
 @connect(({ <%=moduleName%>, loading }) => ({
   <%=moduleName%>,
@@ -319,7 +322,7 @@ class Index extends Base {
       <span title={record.title} className={styles.itemTitle}>
         {record.title}
       </span>
-      ÎÎ
+      {record.rowId}
     </div>
   );
 
@@ -428,6 +431,7 @@ class Index extends Base {
     }
     return btnList;
   };
+
   // ==============CardList组件处理部分======end============== 
   handleSearch = resetFlag => {
     this.getList(
@@ -505,43 +509,35 @@ class Index extends Base {
               renderSearchIcon={this.renderSearchIcon}
             />
           </div>
-          <div className={styles.right}>
-            <AdvancedFilter
+          <div className={classnames(styles.right, showCardType ? styles.cardBg : null)}>
+          <CommonFilter
               handleSubmit={() => this.handleSearch()}
               handleReset={() => this.handleSearch(true)}
               onExpanedCallBack={this.handleExpand}
-              extraContent={
+              extra={
                 <Fragment>
-                  <Button type="primary" onClick={() => {}}>
-                    添加
-                  </Button>
-                </Fragment>
-              }
-              advancedExtra={
-                <Fragment>
-                  <Button onClick={() => {this.getList({})}}>
+                  <Button
+                    className={classnames('margin-left-10')}
+                    type="primary"
+                    onClick={() => {
+                      this.getList({});
+                    }}
+                  >
                     刷新
                   </Button>
                 </Fragment>
               }
-              advancedItem={[
-                <Form.Item {...this.formItemLayout}>
-                  {getFieldDecorator('name')(
-                    <Input.Search
-                      onSearch={() => this.handleSearch()}
-                      onPressEnter={() => this.handleSearch()}
-                      placeholder={getPlaceholder(
-                        formatMessage({
-                          id: '<%=moduleName%>.name',
-                          defaultMessage: '名称',
-                        })
-                      )}
-                    />
-                  )}
-                </Form.Item>,
-              ]}
+              // extraContent={} // 预留AdvancedFilter参数
+              // advancedExtra={ }
+              // advancedItem={[]}
             >
-              <Form.Item {...this.formItemLayout} label="类型">
+              <Form.Item
+                {...this.formItemLayout}
+                label={formatMessage({
+                  id: 'home.name',
+                  defaultMessage: '类型',
+                })}
+              >
                 {getFieldDecorator('type', {
                   rules: [{ required: false }],
                 })(
@@ -556,8 +552,28 @@ class Index extends Base {
                   </Select>
                 )}
               </Form.Item>
-            </AdvancedFilter>
-           <div style={{ flex: 1, overflow: 'hidden' }}>
+              <Form.Item
+                {...this.formItemLayout}
+                label={formatMessage({
+                  id: 'home.name',
+                  defaultMessage: '名称',
+                })}
+              >
+                {getFieldDecorator('name')(
+                  <Input
+                    // onSearch={() => this.handleSearch()}
+                    // onPressEnter={() => this.handleSearch()}
+                    placeholder={getPlaceholder(
+                      formatMessage({
+                        id: 'home.name',
+                        defaultMessage: '名称',
+                      })
+                    )}
+                  />
+                )}
+              </Form.Item>
+            </CommonFilter>
+            <div style={{ flex: 1, overflow: 'hidden' }}>
               {!showCardType ? (
                 <ExpandTable
                   rowKey="rowId"
