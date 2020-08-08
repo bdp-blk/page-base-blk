@@ -510,33 +510,33 @@ class Index extends Base {
             />
           </div>
           <div className={classnames(styles.right, showCardType ? styles.cardBg : null)}>
-          <CommonFilter
-              handleSubmit={() => this.handleSearch()}
-              handleReset={() => this.handleSearch(true)}
-              onExpanedCallBack={this.handleExpand}
-              extra={
-                <Fragment>
-                  <Button
-                    className={classnames('margin-left-10')}
-                    type="primary"
-                    onClick={() => {
-                      this.getList({});
-                    }}
-                  >
-                    刷新
-                  </Button>
-                </Fragment>
-              }
-              // extraContent={} // 预留AdvancedFilter参数
-              // advancedExtra={ }
-              // advancedItem={[]}
+           <CommonFilter
+            handleSubmit={() => this.handleSearch()}
+            handleReset={() => this.handleSearch(true)}
+            onExpanedCallBack={this.handleExpand}
+            extra={
+              <Fragment>
+                <Button
+                  className={classnames('margin-left-10')}
+                  type="primary"
+                  onClick={() => {
+                    this.getList({});
+                  }}
+                >
+                  刷新
+                </Button>
+              </Fragment>
+            }
+            // extraContent={} // 预留AdvancedFilter参数
+            // advancedExtra={ }
+            // advancedItem={[]}
             >
               <Form.Item
-                {...this.formItemLayout}
-                label={formatMessage({
-                  id: '<%=moduleName%>.name',
-                  defaultMessage: '类型',
-                })}
+              {...this.formItemLayout}
+              label={formatMessage({
+                id: '<%=moduleName%>.name',
+                defaultMessage: '类型',
+              })}
               >
                 {getFieldDecorator('type', {
                   rules: [{ required: false }],
@@ -553,11 +553,11 @@ class Index extends Base {
                 )}
               </Form.Item>
               <Form.Item
-                {...this.formItemLayout}
-                label={formatMessage({
-                  id: '<%=moduleName%>.name',
-                  defaultMessage: '名称',
-                })}
+              {...this.formItemLayout}
+              label={formatMessage({
+                id: '<%=moduleName%>.name',
+                defaultMessage: '名称',
+              })}
               >
                 {getFieldDecorator('name')(
                   <Input
