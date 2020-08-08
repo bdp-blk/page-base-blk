@@ -332,20 +332,20 @@ class Index extends Base {
     return (
       <table className={styles.cardBody}>
         <tr>
-          <td>{formatMessage({ id: 'metaTables.code', defaultMessage: '编码' })}</td>
+          <td>{formatMessage({ id: '<%=moduleName%>.code', defaultMessage: '编码' })}</td>
           <td>:</td>
           <td>{record.id}</td>
         </tr>
         <tr>
           <td className="cardLabel">
-            {formatMessage({ id: 'metaTables.cycle', defaultMessage: '周期' })}
+            {formatMessage({ id: '<%=moduleName%>.cycle', defaultMessage: '周期' })}
           </td>
           <td>:</td>
           <td className="cardValue">日</td>
         </tr>
         <tr>
           <td className="cardLabel">
-            {formatMessage({ id: 'metaTables.statusCd', defaultMessage: '状态' })}
+            {formatMessage({ id: '<%=moduleName%>.statusCd', defaultMessage: '状态' })}
           </td>
           <td>:</td>
           <td className="cardValue">
@@ -402,7 +402,7 @@ class Index extends Base {
       btnList = [
         {
           text: formatMessage({
-            id: 'operate.batchShelves',
+            id: 'operate.batchOnline',
             defaultMessage: '批量上架',
           }),
           disabled: batchDisabled,
@@ -410,14 +410,14 @@ class Index extends Base {
         },
         {
           text: formatMessage({
-            id: 'operate.batchDownShelf',
+            id: 'operate.batchOutline',
             defaultMessage: '批量下架',
           }),
           onClick: this.allOuted,
         },
         {
           text: formatMessage({
-            id: 'metaTables.table_batch_delete_btn',
+            id: '<%=moduleName%>.batchDel',
             defaultMessage: '批量删除',
           }),
           disabled: batchDisabled,
@@ -534,7 +534,7 @@ class Index extends Base {
               <Form.Item
                 {...this.formItemLayout}
                 label={formatMessage({
-                  id: 'home.name',
+                  id: '<%=moduleName%>.name',
                   defaultMessage: '类型',
                 })}
               >
@@ -555,7 +555,7 @@ class Index extends Base {
               <Form.Item
                 {...this.formItemLayout}
                 label={formatMessage({
-                  id: 'home.name',
+                  id: '<%=moduleName%>.name',
                   defaultMessage: '名称',
                 })}
               >
@@ -565,7 +565,7 @@ class Index extends Base {
                     // onPressEnter={() => this.handleSearch()}
                     placeholder={getPlaceholder(
                       formatMessage({
-                        id: 'home.name',
+                        id: '<%=moduleName%>.name',
                         defaultMessage: '名称',
                       })
                     )}
