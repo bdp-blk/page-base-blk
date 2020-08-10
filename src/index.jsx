@@ -18,7 +18,6 @@ import { getPlaceholder } from '@/bdpcloud/utils/utils';
 import CommonFilter from '@/bdpcloud/components/CommonFilter';
 import router from 'umi/router';
 import classnames from 'classnames';
-import _ from 'lodash';
 
 @connect(({ <%=moduleName%>, loading }) => ({
   <%=moduleName%>,
