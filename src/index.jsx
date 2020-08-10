@@ -7,7 +7,7 @@
  */
 import React, { Fragment } from 'react';
 import { connect } from 'dva';
-import { Form, Input, Button, Select, Divider, Popconfirm } from 'antd';
+import { Form, Input, Button, Select, Divider, Popconfirm, Tag } from 'antd';
 import styles from './index.less';
 import { BaseSub as Base } from '@<%=proName%>/base';
 import { CategoryTree, ExpandTable, MyIcon} from '@/bdpcloud/components';
@@ -19,6 +19,7 @@ import CommonFilter from '@/bdpcloud/components/CommonFilter';
 import router from 'umi/router';
 import classnames from 'classnames';
 
+const colors = ['red', 'green', 'blue']
 @connect(({ <%=moduleName%>, loading }) => ({
   <%=moduleName%>,
   loading: !!loading.effects['<%=moduleName%>/getList'] || !!loading.effects['<%=moduleName%>/getTree'],
@@ -184,7 +185,7 @@ class Index extends Base {
         title: formatMessage({id: '<%=moduleName%>.title',defaultMessage: '名字'}),
         key: 'title',
         dataIndex: 'title',
-        width: '10%',
+        width: '15%',
         ellipsis: true,
       },
       {
@@ -194,7 +195,7 @@ class Index extends Base {
         }),
         key: 'type',
         dataIndex: 'type',
-        width: '10%',
+        width: '15%',
         ellipsis: true,
       },
       {
@@ -207,21 +208,22 @@ class Index extends Base {
         filterMultiple: false,
         render: text => {
           const [item] = statusCdList.filter(ele => text === ele.value);
-          return (item && item.text) || '-';
+          const n  = Math.floor(Math.random() * colors.length + 1)-1
+          return (item && <Tag color={colors[n]}>{item.text}</Tag>) || '-';
         },
       },
       {
         title: formatMessage({id: 'COMMON_CREATOR',defaultMessage: '创建人'}),
         key: 'creator',
         dataIndex: 'creator',
-        width: '10%',
+        width: '15%',
         ellipsis: true,
       },
       {
         title: formatMessage({id: 'COMMON_CREATE_TIME',defaultMessage: '创建时间'}),
         key: 'createDate',
         dataIndex: 'createDate',
-        width: '15%',
+        width: '20%',
         ellipsis: true,
         render: text => {
           return moment(text).format('YYYY-MM-DD HH:mm:ss');
