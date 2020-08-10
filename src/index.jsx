@@ -341,7 +341,7 @@ class Index extends Base {
       <div className={styles.index}>
         <div className={styles.title}> 
           <span><%=name%></span>
-          <div className={styles.flexLayout}>
+          <div className={styles.flexSb}>
             <Button
               type="primary"
               onClick={() => {
