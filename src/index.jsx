@@ -10,7 +10,7 @@ import { connect } from 'dva';
 import { Form, Input, Button, Select, Divider, Popconfirm,Tag } from 'antd';
 import styles from './index.less';
 import { BaseSub as Base } from '@<%=proName%>/base';
-import { CategoryTree, ExpandTable, MyIcon, CardList, CardsSelect } from '@/bdpcloud/components';
+import { CategoryTree, ExpandTable, MyIcon} from '@/bdpcloud/components';
 import { formatMessage } from 'umi/locale';
 import moment from 'moment';
 import { getPlaceholder } from '@/bdpcloud/utils/utils';
@@ -298,141 +298,6 @@ class Index extends Base {
 
   // ==============ExpandTable组件处理部分======end============== 
 
-  // ==============CardList组件处理部分======start============== 
-  allCardOperate = () => {
-    const { editState } = this.state;
-    this.setState({
-      editState: !editState,
-    });
-  };
-
-  getIsOnlineValue = () => {
-    const { dataList } = this.state;
-    const { checkKeysList } = this.CardList.state;
-    for (let i = 0; i < checkKeysList.length; i++) {
-      if (_.some(dataList, { rowId: checkKeysList[i], status: '1000' })) {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  header = record => (
-    <div className={styles.flexLayout}>
-      <span title={record.title} className={styles.itemTitle}>
-        {record.title}
-      </span>
-      {record.rowId}
-    </div>
-  );
-
-  body = record => {
-    const { statusCdList } = this.state;
-    const item = statusCdList.find(itemI => record.statusCd === itemI.value);
-    return (
-      <table className={styles.cardBody}>
-        <tr>
-          <td>{formatMessage({ id: '<%=moduleName%>.code', defaultMessage: '编码' })}</td>
-          <td>:</td>
-          <td>{record.id}</td>
-        </tr>
-        <tr>
-          <td className="cardLabel">
-            {formatMessage({ id: '<%=moduleName%>.cycle', defaultMessage: '周期' })}
-          </td>
-          <td>:</td>
-          <td className="cardValue">日</td>
-        </tr>
-        <tr>
-          <td className="cardLabel">
-            {formatMessage({ id: '<%=moduleName%>.statusCd', defaultMessage: '状态' })}
-          </td>
-          <td>:</td>
-          <td className="cardValue">
-            <Tag>{(item && item.text) || '-'}</Tag>
-          </td>
-        </tr>
-        <tr>
-          <td className="cardLabel">
-            {formatMessage({ id: 'COMMON_CREATOR', defaultMessage: '创建人' })}
-          </td>
-          <td>:</td>
-          <td className="cardValue">{record.creator}</td>
-        </tr>
-      </table>
-    );
-  };
-
-  footer = record => (
-    <div className={classnames(styles.flexLayout)}>
-      <div>{moment(record.createDate).format('YYYY/MM/DD')}</div>
-      <div>
-        <MyIcon
-          className={styles.iconHover}
-          title={formatMessage({ id: 'COMMON_EDIT', defaultMessage: '编辑' })}
-          type="iconedit-square"
-          onClick={() => {}}
-        />
-        <Divider type="vertical" />
-        <Popconfirm
-          title={formatMessage({ id: 'CONFIRM_DELETION', defaultMessage: '是否删除?' })}
-          onConfirm={e => {
-            e.stopPropagation();
-            // this.handleDelete(record);
-          }}
-          onCancel={e => {
-            e.stopPropagation();
-          }}
-        >
-          <MyIcon
-            onClick={e => e.stopPropagation()}
-            className={styles.iconHover}
-            title={formatMessage({ id: 'COMMON_DELETE', defaultMessage: '删除' })}
-            type="icondelete"
-          />
-        </Popconfirm>
-      </div>
-    </div>
-  );
-
-  mulitBtnList = () => {
-    const { editState, batchDisabled } = this.state;
-    let btnList = [];
-    if (editState) {
-      btnList = [
-        {
-          text: formatMessage({
-            id: 'operate.batchOnline',
-            defaultMessage: '批量上架',
-          }),
-          disabled: batchDisabled,
-          onClick: this.allAdded,
-        },
-        {
-          text: formatMessage({
-            id: 'operate.batchOutline',
-            defaultMessage: '批量下架',
-          }),
-          onClick: this.allOuted,
-        },
-        {
-          text: formatMessage({
-            id: '<%=moduleName%>.batchDel',
-            defaultMessage: '批量删除',
-          }),
-          disabled: batchDisabled,
-          confirmText: formatMessage({
-            id: 'CONFIRM_DELETION',
-            defaultMessage: '是否删除?',
-          }),
-          onClick: this.allDelete,
-        },
-      ];
-    }
-    return btnList;
-  };
-
-  // ==============CardList组件处理部分======end============== 
   handleSearch = resetFlag => {
     this.getList(
       {
@@ -484,18 +349,6 @@ class Index extends Base {
             >
               添加
             </Button>
-            {showCardType && (
-              <Button className={classnames('button-margin-left')} onClick={this.allCardOperate}>
-                {editState ? '取消批量操作' : '批量操作'}
-              </Button>
-            )}
-            <MyIcon
-              className={classnames('button-margin-left', styles.handoverIcon)}
-              type={showCardType ? 'iconunorderedlist' : 'iconkapianx'}
-              onClick={() => {
-                this.setState({ showCardType: !showCardType });
-              }}
-            />
           </div>
         </div>
         <div className={styles.main}>
@@ -504,12 +357,12 @@ class Index extends Base {
               treeData={treeData}
               shouldUpdateProps={['treeData']}
               onSelect={this.handleDirSelect}
-              menusList={this.menusList}
-              menuItemClick={this.menuItemClick}
-              renderSearchIcon={this.renderSearchIcon}
+              // menusList={this.menusList}
+              // menuItemClick={this.menuItemClick}
+              // renderSearchIcon={this.renderSearchIcon}
             />
           </div>
-          <div className={classnames(styles.right, showCardType ? styles.cardBg : null)}>
+          <div className={classnames(styles.right)}>
             <CommonFilter
               handleSubmit={() => this.handleSearch()}
               handleReset={() => this.handleSearch(true)}
@@ -574,90 +427,34 @@ class Index extends Base {
               </Form.Item>
             </CommonFilter>
             <div style={{ flex: 1, overflow: 'hidden' }}>
-              {!showCardType ? (
-                <ExpandTable
-                  rowKey="rowId"
-                  data={listInfo}
-                  canExpand={false}
-                  loading={loading}
-                  columns={this.getColumns()}
-                  onChange={this.pageOnChange}
-                  filterChange={this.filterChange}
-                  canSelect={false} // 为了简单示范，屏蔽多选功能
-                  allCheckedChange={(keys, selectedRows) => {
-                    this.setState({
-                      selectedRowKeys: selectedRows.map(o => o.rowId),
-                    });
-                  }}
-                  onSelectRow={(rows, selectedRowKeys) => {
-                    this.setState({
-                      selectedRowKeys,
-                    });
-                  }}
-                  onRow={record => ({
-                    onClick: () => {
-                      this.setState({ selectedRow: record });
-                    },
-                  })}
-                  ref={v => {
-                    this.ExpandTable = v;
-                  }}
-                />
-              ) : (
-                <CardList
-                  rowId="rowId"
-                  loading={loading}
-                  showFooter={true}
-                  dataSource={listInfo.list}
-                  mulitBtnList={this.mulitBtnList()}
-                  addCardProps={{
-                    addText: formatMessage({ id: 'COMMON_ADD', defaultMessage: '新增' }),
-                    addCard: true,
-                    onClick: () => {
-                      this.goToAdd('0');
-                    },
-                  }}
-                  pagination={{
-                    ...listInfo.pagination,
-                    showSelectInf: editState,
-                    showQuickJumper: true,
-                    showSizeChanger: true,
-                    onChange: this.onPageChange,
-                  }}
-                  Refs={v => {
-                    this.CardList = v;
-                  }}
-                  callbackFunc={() => {
-                    this.setState({
-                      batchDisabled: this.getIsOnlineValue(),
-                    });
-                  }}
-                  cardItemFn={(record, cardItemProps) => {
-                    const cardClick = () => {
-                      if (cardItemProps.checked) {
-                        cardItemProps.checkClick(record);
-                      } else {
-                        cardItemProps.onClick(record);
-                      }
-                    };
-                    return (
-                      <div className={styles.viewCard} onClick={() => this.goToAdd('1', record)}>
-                        <CardsSelect
-                          state={false}
-                          noMaskSelect={editState}
-                          checked={cardItemProps.checked}
-                          checkClick={cardClick}
-                          onClick={cardClick}
-                          loading={record.loading}
-                          header={this.header(record)}
-                          body={this.body(record)}
-                          footer={this.footer(record)}
-                        />
-                      </div>
-                    );
-                  }}
-                />
-              )}
+              <ExpandTable
+                rowKey="rowId"
+                data={listInfo}
+                canExpand={false}
+                loading={loading}
+                columns={this.getColumns()}
+                onChange={this.pageOnChange}
+                filterChange={this.filterChange}
+                canSelect={false} // 为了简单示范，屏蔽多选功能
+                allCheckedChange={(keys, selectedRows) => {
+                  this.setState({
+                    selectedRowKeys: selectedRows.map(o => o.rowId),
+                  });
+                }}
+                onSelectRow={(rows, selectedRowKeys) => {
+                  this.setState({
+                    selectedRowKeys,
+                  });
+                }}
+                onRow={record => ({
+                  onClick: () => {
+                    this.setState({ selectedRow: record });
+                  },
+                })}
+                ref={v => {
+                  this.ExpandTable = v;
+                }}
+              />
             </div>
           </div>
         </div>
