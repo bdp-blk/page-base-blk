@@ -7,7 +7,7 @@
  */
 import React, { Fragment } from 'react';
 import { connect } from 'dva';
-import { Form, Input, Button, Select, Divider, Popconfirm,Tag } from 'antd';
+import { Form, Input, Button, Select, Divider, Popconfirm } from 'antd';
 import styles from './index.less';
 import { BaseSub as Base } from '@<%=proName%>/base';
 import { CategoryTree, ExpandTable, MyIcon} from '@/bdpcloud/components';
@@ -334,7 +334,7 @@ class Index extends Base {
       loading,
       form: { getFieldDecorator },
     } = this.props;
-    const { selectList, editState, showCardType } = this.state;
+    const { selectList } = this.state;
 
     return (
       <div className={styles.index}>
