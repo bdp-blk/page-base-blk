@@ -19,8 +19,8 @@ import { formatDate } from '@<%=proName%>/utils/time';
 }))
 class Index extends Base {
   state = {};
-  columns = [
   
+  columns = [
     {
       title: formatMessage({ id: '<%=moduleName%>.code', defaultMessage: '编码' }),
       key: 'indicatorCode',
