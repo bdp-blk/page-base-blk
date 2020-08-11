@@ -12,12 +12,12 @@ import styles from './index.less';
 import { BaseSub as Base } from '@<%=proName%>/base';
 import { CategoryTree, ExpandTable, MyIcon} from '@/bdpcloud/components';
 import { formatMessage } from 'umi/locale';
-import moment from 'moment';
 import { getPlaceholder } from '@/bdpcloud/utils/utils';
 // import AdvancedFilter from '@/bdpcloud/components/AdvancedFilter';
 import CommonFilter from '@/bdpcloud/components/CommonFilter';
 import router from 'umi/router';
 import classnames from 'classnames';
+import { formatDate } from '@<%=proName%>/utils/time';
 
 const colors = ['red', 'green', 'blue']
 @connect(({ <%=moduleName%>, loading }) => ({
@@ -225,9 +225,7 @@ class Index extends Base {
         dataIndex: 'createDate',
         width: '20%',
         ellipsis: true,
-        render: text => {
-          return moment(text).format('YYYY-MM-DD HH:mm:ss');
-        },
+        render: text => (text ? formatDate(text) : '-'),
       },
       {
         title: formatMessage({ id: 'OPERATE', defaultMessage: '操作' }),
