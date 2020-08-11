@@ -358,6 +358,10 @@ class Index extends Base {
       onCancel: () => {
         this.setState({ detailModalShow: false });
       },
+      onOk: async () => {
+        const data = this.DetailModal.getRefData();
+        console.log(data);
+      }
     };
 
     return (
