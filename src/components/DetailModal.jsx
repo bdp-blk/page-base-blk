@@ -20,82 +20,29 @@ import { formatDate } from '@<%=proName%>/utils/time';
 class Index extends Base {
   state = {};
   columns = [
+  
     {
-      title: formatMessage({ id: '<%=moduleName%>.indicatorType', defaultMessage: '指标类型' }),
+      title: formatMessage({ id: '<%=moduleName%>.code', defaultMessage: '编码' }),
+      key: 'indicatorCode',
+      dataIndex: 'indicatorCode',
+      width: '10%',
+      ellipsis: true,
+    },  {
+      title: formatMessage({ id: '<%=moduleName%>.type', defaultMessage: '类型' }),
       key: 'indicatorType',
       dataIndex: 'indicatorType',
       width: '10%',
       ellipsis: true,
     },
     {
-      title: formatMessage({ id: '<%=moduleName%>.indicatorSubItem', defaultMessage: '指标子项' }),
-      key: 'indicatorSubItem',
-      dataIndex: 'indicatorSubItem',
-      width: '10%',
-      ellipsis: true,
-    },
-    {
-      title: formatMessage({ id: '<%=moduleName%>.indicatorName', defaultMessage: '指标名称' }),
-      key: 'indicatorName',
-      dataIndex: 'indicatorName',
-      width: '10%',
-    },
-    {
-      title: formatMessage({ id: '<%=moduleName%>.indicatorCode', defaultMessage: '指标编码' }),
-      key: 'indicatorCode',
-      dataIndex: 'indicatorCode',
-      width: '10%',
-      ellipsis: true,
-    },
-    {
-      title: formatMessage({ id: '<%=moduleName%>.indicatorValue', defaultMessage: '指标值' }),
+      title: formatMessage({ id: '<%=moduleName%>.value', defaultMessage: '值' }),
       key: 'indicatorValue',
       dataIndex: 'indicatorValue',
       width: '10%',
       ellipsis: true,
     },
     {
-      title: formatMessage({ id: '<%=moduleName%>.unit', defaultMessage: '单位' }),
-      key: 'unit',
-      dataIndex: 'unit',
-      width: '10%',
-    },
-    {
-      title: formatMessage({ id: '<%=moduleName%>.parameterRangeValue', defaultMessage: '参数范围值' }),
-      key: 'parameterRangeValue',
-      dataIndex: 'parameterRangeValue',
-      width: '10%',
-      ellipsis: true,
-    },
-    {
-      title: formatMessage({ id: '<%=moduleName%>.abnormalLocation', defaultMessage: '异常位置' }),
-      key: 'abnormalLocation',
-      dataIndex: 'abnormalLocation',
-      width: '10%',
-      ellipsis: true,
-    },
-    {
-      title: formatMessage({ id: '<%=moduleName%>.affectedHostNum', defaultMessage: '影响主机数' }),
-      key: 'affectedHostNum',
-      dataIndex: 'affectedHostNum',
-      width: '10%',
-    },
-    {
-      title: formatMessage({ id: '<%=moduleName%>.riskLevel', defaultMessage: '风险级别' }),
-      key: 'riskLevel',
-      dataIndex: 'riskLevel',
-      width: '10%',
-      ellipsis: true,
-    },
-    {
-      title: formatMessage({ id: '<%=moduleName%>.remark', defaultMessage: '备注' }),
-      key: 'remark',
-      dataIndex: 'remark',
-      width: '10%',
-      ellipsis: true,
-    },
-    {
-      title: formatMessage({ id: '<%=moduleName%>.createDate', defaultMessage: '产生时间' }),
+      title: formatMessage({ id: '<%=moduleName%>.createDate', defaultMessage: '时间' }),
       key: 'createDate',
       dataIndex: 'createDate',
       width: '15%',

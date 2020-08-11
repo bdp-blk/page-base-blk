@@ -59,17 +59,13 @@ class Index extends Base {
         },
       ],
       editState: false,
-      showCardType: false,
       detailModalShow: false,
     };
   }
  
   initData() {
-    const {showCardType} = this.state
     this.getTree();
-    if (showCardType) {
-      this.getList();
-    }
+    // this.getList();
   }
 
   getTree = () => {
