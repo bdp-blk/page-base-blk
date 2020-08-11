@@ -18,6 +18,7 @@ import CommonFilter from '@/bdpcloud/components/CommonFilter';
 import router from 'umi/router';
 import classnames from 'classnames';
 import { formatDate } from '@<%=proName%>/utils/time';
+import { DetailModal } from './components';
 
 const colors = ['red', 'green', 'blue']
 @connect(({ <%=moduleName%>, loading }) => ({
@@ -59,6 +60,7 @@ class Index extends Base {
       ],
       editState: false,
       showCardType: false,
+      detailModalShow: false,
     };
   }
  
@@ -187,6 +189,17 @@ class Index extends Base {
         dataIndex: 'title',
         width: '15%',
         ellipsis: true,
+        render: text => {
+          return (
+            <a
+              onClick={() => {
+                this.setState({ detailModalShow: true });
+              }}
+            >
+              {text}
+            </a>
+          );
+        },
       },
       {
         title: formatMessage({
@@ -333,10 +346,23 @@ class Index extends Base {
       loading,
       form: { getFieldDecorator },
     } = this.props;
-    const { selectList } = this.state;
+    const { selectList, selectedRow, detailModalShow } = this.state;
+
+    const detailModalProps = {
+      selectedRow,
+      visible: detailModalShow,
+      title: '详情',
+      Refs: v => {
+        this.DetailModal = v;
+      },
+      onCancel: () => {
+        this.setState({ detailModalShow: false });
+      },
+    };
 
     return (
       <div className={styles.index}>
+        {detailModalShow && <DetailModal {...detailModalProps} />}
         <div className={styles.title}> 
           <span><%=name%></span>
           <div className={styles.flexSb}>
