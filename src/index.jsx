@@ -7,7 +7,7 @@
  */
 import React, { Fragment } from 'react';
 import { connect } from 'dva';
-import { Form, Input, Button, Select, Divider, Popconfirm, Tag, DatePicker } from 'antd';
+import { Form, Input, Button, Select, Divider, Popconfirm, Tag, DatePicker, message, Modal } from 'antd';
 import styles from './index.less';
 import { BaseSub as Base } from '@<%=proName%>/base';
 import { CategoryTree, ExpandTable, MyIcon} from '@/bdpcloud/components';
@@ -30,7 +30,8 @@ class Index extends Base {
   constructor(props) {
     super(props);
     this.state = {
-      selectedRow: '',
+      selectedRow: undefined,
+      selectedRowKeys: [],
       selectedRowDir: '',
       selectList: [
         {
@@ -304,6 +305,77 @@ class Index extends Base {
     }
   };
 
+  renderFooter = () => {
+    const { selectedRowKeys } = this.state;
+    const { loading } = this.props;
+    const batchMenus = [{ value: 'del', label: '批量删除' }];
+    return (
+      <BatchButton
+        menus={batchMenus}
+        disabled={loading || selectedRowKeys.length === 0}
+        handleMenuClick={this.onBatchMenuClick}
+      />
+    );
+  };
+
+  onBatchMenuClick = ({ key }) => {
+    if (!key) return;
+    switch (key) {
+      case 'del':
+        this.batchDel();
+        break;
+      default:
+        break;
+    }
+  };
+
+  batchDel = () => {
+    const { selectedRowKeys } = this.state;
+    const {
+      <%=moduleName%>: {
+        listInfo: { list },
+      },
+    } = this.props;
+    const selectedRows = list.filter(item => selectedRowKeys.indexOf(item.rowId) > -1);
+    const isIneligible = selectedRows.some(item => item.tableState != '0');
+    if (isIneligible) {
+      message.warning(
+        `${formatMessage({
+          id: '<%=moduleName%>.batchTips',
+          defaultMessage: '当前批量列表中包含不可操作项，请检查后再次批量操作!',
+        })}`
+      );
+    } else {
+      Modal.confirm({
+        content: `${formatMessage({
+          id: '<%=moduleName%>.confirmBatch',
+          defaultMessage: '将进行批量删除操作，确定操作？',
+        })}`,
+        onOk: () => {
+          const rowIds = selectedRows.map(item => item.rowId).join(',');
+          if (rowIds) {
+            this.handleDelNode(rowIds);
+          }
+        },
+      });
+    }
+  };
+
+  handleDelNode = hostIds => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: '<%=moduleName%>/delNode',
+      payload: {
+        hostIds,
+      },
+    }).then(res => {
+      const { isSuccess } = res;
+      if (isSuccess) {
+        this.getList();
+      }
+    });
+  };
+
   // ==============ExpandTable组件处理部分======end============== 
 
   handleSearch = resetFlag => {
@@ -478,6 +550,7 @@ class Index extends Base {
                 onChange={this.pageOnChange}
                 filterChange={this.filterChange}
                 canSelect={false} // 为了简单示范，屏蔽多选功能
+                footerRender={this.renderFooter}
                 allCheckedChange={(keys, selectedRows) => {
                   this.setState({
                     selectedRowKeys: selectedRows.map(o => o.rowId),
