@@ -15,7 +15,7 @@ import { formatDate } from '@<%=proName%>/utils/time';
 
 @connect(({ <%=moduleName%>, loading }) => ({
   <%=moduleName%>,
-  loading: !!loading.effects['<%=moduleName%>/getSearchList'],
+  loading: !!loading.effects['<%=moduleName%>/getList'],
 }))
 class Index extends Base {
   state = {};
@@ -23,21 +23,21 @@ class Index extends Base {
   columns = [
     {
       title: formatMessage({ id: '<%=moduleName%>.code', defaultMessage: '编码' }),
-      key: 'indicatorCode',
-      dataIndex: 'indicatorCode',
+      key: 'rowId',
+      dataIndex: 'rowId',
       width: '10%',
       ellipsis: true,
     },  {
       title: formatMessage({ id: '<%=moduleName%>.type', defaultMessage: '类型' }),
-      key: 'indicatorType',
-      dataIndex: 'indicatorType',
+      key: 'type',
+      dataIndex: 'type',
       width: '10%',
       ellipsis: true,
     },
     {
-      title: formatMessage({ id: '<%=moduleName%>.value', defaultMessage: '值' }),
-      key: 'indicatorValue',
-      dataIndex: 'indicatorValue',
+      title: formatMessage({ id: '<%=moduleName%>.name', defaultMessage: '名称' }),
+      key: 'title',
+      dataIndex: 'title',
       width: '10%',
       ellipsis: true,
     },
