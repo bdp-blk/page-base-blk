@@ -7,7 +7,7 @@
  */
 import React, { Fragment } from 'react';
 import { connect } from 'dva';
-import { Form, Input, Button, Select, Divider, Popconfirm, Tag } from 'antd';
+import { Form, Input, Button, Select, Divider, Popconfirm, Tag, DatePicker } from 'antd';
 import styles from './index.less';
 import { BaseSub as Base } from '@<%=proName%>/base';
 import { CategoryTree, ExpandTable, MyIcon} from '@/bdpcloud/components';
@@ -447,6 +447,23 @@ class Index extends Base {
                         defaultMessage: '名称',
                       })
                     )}
+                  />
+                )}
+              </Form.Item>
+              <Form.Item
+                {...this.formItemLayout}
+                label={formatMessage({ id: 'taskMgt.timeFilter', defaultMessage: '时间筛选' })}
+              >
+                {getFieldDecorator('timeFilter')(
+                  <DatePicker.RangePicker
+                    style={{ minWidth: 200 }}
+                    format="YYYY-MM-DD HH:mm:ss"
+                    placeholder={[
+                      `${formatMessage({ id: 'MAINTAINMGR_FROM' })}`,
+                      `${formatMessage({ id: 'MAINTAINMGR_TO' })}`,
+                    ]}
+                    allowClear
+                    showTime
                   />
                 )}
               </Form.Item>
