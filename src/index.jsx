@@ -30,9 +30,9 @@ class Index extends Base {
   constructor(props) {
     super(props);
     this.state = {
-      selectedRow: undefined,
       selectedRowKeys: [],
-      selectedRowDir: '',
+      selectedRow: undefined,
+      selectedRowDir: undefined,
       selectList: [
         {
           id: 1,
@@ -251,7 +251,7 @@ class Index extends Base {
                 type="iconedit"
                 title="修改"
                 onClick={() => {
-                  this.goToAdd('1', record);
+                  this.goToNext('edit', record);
                 }}
               />
               <Divider type="vertical" />
@@ -385,18 +385,18 @@ class Index extends Base {
     );
   };
 
-  goToAdd = (key, selectedRow) => {
+  goToNext = (key, selectedRow) => {
     const baseProps = {
-      viewType: key === '0' ? 'add':'edit',
+      viewType: key,
       selectedRow,
     };
     switch (key) {
-      case '0': // 新增
-      case '1': // 编辑
+      case 'add': // 新增
+      case 'edit': // 编辑
       router.push({
         pathname: '/<%=proName%>/<%=moduleName%>/add',
         breadcrumb: {
-          name: key === '0' ? '新增':'编辑',
+          name: key === 'add' ? '新增':'编辑',
         },
         ...baseProps,
       });
@@ -439,7 +439,7 @@ class Index extends Base {
             <Button
               type="primary"
               onClick={() => {
-                this.goToAdd('0');
+                this.goToNext('add');
               }}
             >
               添加
