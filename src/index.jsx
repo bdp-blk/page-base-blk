@@ -9,7 +9,7 @@ import React, { Fragment } from 'react';
 import { connect } from 'dva';
 import { Form, Input, Button, Select, Divider, Popconfirm, Tag, DatePicker, message, Modal } from 'antd';
 import styles from './index.less';
-import { BaseSub as Base } from '@<%=proName%>/base';
+import { Base } from '@<%=proName%>/base';
 import { CategoryTree, ExpandTable, MyIcon} from '@/bdpcloud/components';
 import { formatMessage } from 'umi/locale';
 import { getPlaceholder } from '@/bdpcloud/utils/utils';
