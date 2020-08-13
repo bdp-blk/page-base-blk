@@ -247,8 +247,6 @@ class Index extends Base {
         render: (text, record) => {
           return (
             <Fragment>
-              <MyIcon type="iconplay-circle" title="停止" onClick={() => {}} />
-              <Divider type="vertical" />
               <MyIcon
                 type="iconedit"
                 title="修改"
