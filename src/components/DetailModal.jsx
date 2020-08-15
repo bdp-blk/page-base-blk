@@ -10,7 +10,7 @@ import { Modal } from 'antd';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import { ExpandTable } from '@/bdpcloud/components';
-import Base from '@<%=proName%>/base/BaseSub';
+import {BaseSub as Base} from '@<%=proName%>/base';
 import { formatDate } from '@<%=proName%>/utils/time';
 
 @connect(({ <%=moduleName%>, loading }) => ({
