@@ -71,8 +71,10 @@ class Index extends Base {
     } = this.props;
     // const { listInfo } = this.state;
     const modalProps = {
-      width: 1000,
+      width: 720,
+      maskClosable: false,
       footer: null,
+      // confirmLoading,
       ...restProps,
     };
     return (
