@@ -58,7 +58,6 @@ class Index extends Base {
           text: '已失效',
         },
       ],
-      editState: false,
       detailModalShow: false,
     };
   }
@@ -543,6 +542,7 @@ class Index extends Base {
                 data={listInfo}
                 canExpand={false}
                 loading={loading}
+                // noTablePaddingH={false}
                 columns={this.getColumns()}
                 onChange={this.pageOnChange}
                 filterChange={this.filterChange}
