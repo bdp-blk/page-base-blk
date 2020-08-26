@@ -22,7 +22,7 @@ import { DetailModal } from './components';
 const colors = ['red', 'green', 'blue']
 @connect(({ <%=moduleName%>, loading }) => ({
   <%=moduleName%>,
-  loading: !!loading.effects['<%=moduleName%>/getList'] || !!loading.effects['<%=moduleName%>/getTree'],
+  loading: !!loading.effects['<%=moduleName%>/getList'] || !!loading.effects['<%=moduleName%>/getTreeData'],
 }))
 @Form.create()
 class Index extends Base {
@@ -63,14 +63,14 @@ class Index extends Base {
   }
  
   initData() {
-    this.getTree();
+    this.getTreeData();
     // this.getList();
   }
 
-  getTree = () => {
+  getTreeData = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: '<%=moduleName%>/getTree',
+      type: '<%=moduleName%>/getTreeData',
       payload: {},
     });
   };
