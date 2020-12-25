@@ -11,7 +11,7 @@ import { formatMessage } from 'umi/locale';
 import { getPlaceholder } from '@/bdpcloud/utils/utils';
 import classnames from 'classnames';
 import { Form, Input, Button, Select, Divider, Popconfirm, Tag, DatePicker, message, Modal, Row, Col} from 'antd';
-import { moduleName } from './conf/constant';
+import { moduleName } from '../conf/constant';
 import { Base, DetailModal, ExpandTable, MyIcon, CommonFilter, BatchButton } from './components';
 import styles from './index.less';
 import { formatDate, STR_FORMAT_1 } from '@<%=proName%>/utils/time';
@@ -39,10 +39,6 @@ class Index extends Base {
       statusCd: '',
       detailModalShow: false
     };
-  }
- 
-  initData() {
-    this.getStaticData();
   }
 
   getList = (pageInfo = {}, resetFlag) => {
