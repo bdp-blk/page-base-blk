@@ -5,82 +5,44 @@
  * @modify date 2020-08-06 20:57:45
  * @desc <%=name%>页面(by cli)
  */
-import React, { Fragment } from 'react';
+import React from 'react';
 import { connect } from 'dva';
-import { Form, Input, Button, Select, Divider, Popconfirm, Tag, DatePicker, message, Modal } from 'antd';
-import styles from './index.less';
-import { Base } from '@<%=proName%>/base';
-import { CategoryTree, ExpandTable, MyIcon, CommonFilter} from '@/bdpcloud/components';
-// import AdvancedFilter from '@/bdpcloud/components/AdvancedFilter';
 import { formatMessage } from 'umi/locale';
 import { getPlaceholder } from '@/bdpcloud/utils/utils';
-import router from 'umi/router';
 import classnames from 'classnames';
-import { formatDate } from '@<%=proName%>/utils/time';
-import { DetailModal } from './components';
+import { Form, Input, Button, Select, Divider, Popconfirm, Tag, DatePicker, message, Modal, Row, Col} from 'antd';
+import { moduleName } from './conf/constant';
+import { Base, DetailModal, ExpandTable, MyIcon, CommonFilter, BatchButton } from './components';
+import styles from './index.less';
+import { formatDate, STR_FORMAT_1 } from '@<%=proName%>/utils/time';
 
-const colors = ['red', 'green', 'blue']
-@connect(({ <%=moduleName%>, loading }) => ({
-  <%=moduleName%>,
-  loading: !!loading.effects['<%=moduleName%>/getList'] || !!loading.effects['<%=moduleName%>/getTreeData'],
+const defaultSelected = {
+  selectedRow: undefined,
+  selectedRowDir: undefined,
+  selectedRowKeys: [],
+  selectedRows: [],
+}
+
+@connect(({ <%=moduleName%>, common, loading }) => ({
+  ...<%=moduleName%>,
+  common,
+  loading: !!loading.effects[`${moduleName}/getList`] || !!loading.effects[`${moduleName}/delOne`]
 }))
 @Form.create()
 class Index extends Base {
   constructor(props) {
     super(props);
+    this.moduleName = moduleName;
     this.state = {
-      selectedRowKeys: [],
-      selectedRow: undefined,
-      selectedRowDir: undefined,
-      selectList: [
-        {
-          id: 1,
-          standCode: 'code1',
-          standDisplayValue: '类型1',
-        },
-      ],
-      statusCd: '', // 状态筛选
-      statusCdList: [
-        {
-          value: '0',
-          text: '未发布',
-        },
-        {
-          value: '1',
-          text: '已发布',
-        },
-        {
-          value: '2',
-          text: '发布中',
-        },
-        {
-          value: '3',
-          text: '已失效',
-        },
-      ],
-      detailModalShow: false,
+      ...defaultSelected,
+      viewType: 'add',
+      statusCd: '',
+      detailModalShow: false
     };
   }
  
   initData() {
-    this.getTreeData();
-    // this.getList();
-  }
-
-  getTreeData = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: '<%=moduleName%>/getTreeData',
-      payload: {},
-    });
-  };
-
-  componentWillUnmount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: '<%=moduleName%>/clear',
-      payload: {},
-    });
+    this.getStaticData();
   }
 
   getList = (pageInfo = {}, resetFlag) => {
@@ -88,107 +50,47 @@ class Index extends Base {
       dispatch,
       form: { getFieldsValue, resetFields },
     } = this.props;
-    const { statusCd } = this.state;
     if (resetFlag) {
       resetFields();
       this.setState({
         selectedRowDir: undefined,
       });
     } else {
+      const { statusCd } = this.state;
       const { pageIndex, pageSize } = pageInfo;
-      const { name = '' } = getFieldsValue();
+      const { timeFilter } = getFieldsValue();
       const payload = {
         pageIndex,
         pageSize,
-        statusCd,
-        name,
+        params:{
+          statusCd,
+          ...getFieldsValue(),
+          startTime: (timeFilter && formatDate(timeFilter[0])) || '',
+          endTime: (timeFilter && formatDate(timeFilter[1])) || '',
+        }
       };
       dispatch({
-        type: '<%=moduleName%>/getList',
+        type: `${moduleName}/getList`,
         payload,
       });
     }
   };
 
-  // ==============CategoryTree组件处理部分======start============== 
-  menusList = () => {
-    const menuList = [];
-    // if (!node.isLeaf) {
-    menuList.push({
-      icon: 'iconplus',
-      name: formatMessage({ id: 'BUTTON_ADD', defaultMessage: '新增' }),
-      type: 'add',
-    });
-    // }
-    menuList.push({
-      icon: 'iconedit',
-      name: formatMessage({ id: 'COMMON_EDIT', defaultMessage: '编辑' }),
-      type: 'edit',
-    });
-    menuList.push({
-      icon: 'icondelete',
-      name: formatMessage({ id: 'COMMON_DELETE', defaultMessage: '删除' }),
-      type: 'delete',
-    });
-    return menuList;
-  };
-
-  renderSearchIcon = () => (
-    <MyIcon
-      type="iconplus"
-      title={formatMessage({
-        id: 'DIRMENUMGR_NEW_DIR',
-        defaultMessage: '新增目录',
-      })}
-      className="searchPlus"
-      onClick={() => this.menuItemClick('add', {})}
-    />
-  );
-
-  menuItemClick = (type, selectedRowDir) => {
-    // if (type === 'add' && selectedRowDir && selectedRowDir.isLeaf) {
-    //   message.info('子节点不能新增');
-    //   return;
-    // }
-    if (type === 'add' || type === 'edit') {
-      const dirItem = selectedRowDir;
-      this.setState({
-        // categoryModalShow: true,
-        // viewTypeCate: type,
-        selectedRowDir: dirItem,
-      });
-    } else if (type === 'delete') {
-      console.log(type);
-    }
-  };
-
-  handleDirSelect = (keys, { node }) => {
-    this.setState(
-      {
-        selectedRowDir: node.props.dataRef,
-      },
-      () => {
-        this.handleSearch();
-      }
-    );
-  };
-  // ==============CategoryTree组件处理部分======end============== 
-
-  // ==============ExpandTable组件处理部分======start============== 
   getColumns = () => {
-    const { statusCdList } = this.state;
+    const { common: { staticData: { STATUS_CD = [] } = {} }} = this.props;
     return [
       {
-        title: formatMessage({id: '<%=moduleName%>.title',defaultMessage: '名字'}),
+        title: formatMessage({id: `${moduleName}.title`,defaultMessage: '名字'}),
         key: 'title',
         dataIndex: 'title',
         width: '15%',
-        ellipsis: true,
-        render: text => {
+        // ellipsis: true,
+        render: (text, record) => {
           return (
             <a
-              onClick={() => {
-                this.setState({ detailModalShow: true });
+              onClick={e => {
+                e.stopPropagation();
+                this.operAction('view', record);
               }}
             >
               {text}
@@ -197,27 +99,23 @@ class Index extends Base {
         },
       },
       {
-        title: formatMessage({
-          id: '<%=moduleName%>.type',
-          defaultMessage: '类型',
-        }),
+        title: formatMessage({id: `${moduleName}.type`,defaultMessage: '类型',}),
         key: 'type',
         dataIndex: 'type',
         width: '15%',
         ellipsis: true,
       },
       {
-        title: formatMessage({ id: '<%=moduleName%>.statusCd', defaultMessage: '状态' }),
+        title: formatMessage({ id: `${moduleName}.statusCd`, defaultMessage: '状态' }),
         key: 'statusCd',
         dataIndex: 'statusCd',
-        width: 120,
+        width: '10%',
         ellipsis: true,
-        filters: statusCdList,
+        filters: STATUS_CD,
         filterMultiple: false,
         render: text => {
-          const [item] = statusCdList.filter(ele => text === ele.value);
-          const n  = Math.floor(Math.random() * colors.length + 1)-1
-          return (item && <Tag color={colors[n]}>{item.text}</Tag>) || '-';
+          const [item] = STATUS_CD.filter(ele => text === ele.value);
+          return <Tag color={item && item.value === '00X' ? 'red' : 'lime'}>{item && item.label}</Tag>;
         },
       },
       {
@@ -241,58 +139,20 @@ class Index extends Base {
         dataIndex: 'action',
         width: 150,
         ellipsis: true,
-        fixed: 'right',
-        render: (text, record) => {
-          return (
-            <Fragment>
-              <MyIcon
-                type="iconedit"
-                title="修改"
-                onClick={() => {
-                  this.goToNext('edit', record);
-                }}
-              />
-              <Divider type="vertical" />
-              <Popconfirm
-                title={formatMessage({ id: 'CONFIRM_DELETION', defaultMessage: '是否删除?' })}
-                onConfirm={e => {
-                  e.stopPropagation();
-                  // this.handleDelete(record);
-                }}
-                onCancel={e => {
-                  e.stopPropagation();
-                }}
-              >
-                <MyIcon
-                  onClick={e => e.stopPropagation()}
-                  className={styles.iconHover}
-                  title={formatMessage({ id: 'COMMON_DELETE', defaultMessage: '删除' })}
-                  type="icondelete"
-                />
-              </Popconfirm>
-            </Fragment>
-          );
-        },
+        fixed: 'right', // 扩展时不要使用；
+        render: this.renderAction,
       },
     ];
   };
 
   filterChange = (pagination, filters) => {
-    this.setState(
-      {
-        statusCd: (filters.statusCd && filters.statusCd[0]) || '',
-      },
-      () => {
-        this.handleSearch();
-      }
-    );
+    this.setState({ statusCd: (filters.statusCd && filters.statusCd[0]) || '' }, () => {
+      this.handleSearch();
+    });
   };
 
   pageOnChange = (pageIndex, pageSize) => {
-    this.getList({
-      pageIndex,
-      pageSize,
-    });
+    this.getList({pageIndex,pageSize});
   };
 
   handleExpand = () => {
@@ -314,6 +174,94 @@ class Index extends Base {
     );
   };
 
+  expandedRowRender = record => {
+    return (
+      <Row className={styles.expandedRowBox}>
+        <Col span={8}>
+          <div className={styles.expandedRowItem}>
+            <span>
+              {formatMessage({ id: `${moduleName}.staffId`, defaultMessage: '更新人' })}：
+              {record.staffId}
+            </span>
+          </div>
+        </Col>
+        <Col span={8}>
+          <div className={styles.expandedRowItem}>
+            <span>
+              {formatMessage({ id: `${moduleName}.createTime`, defaultMessage: '更新时间' })}：
+              {record.updateDate ? formatDate(record.updateDate) : '-'}
+            </span>
+          </div>
+        </Col>
+        <Col span={8}>
+          <div className={styles.expandedRowItem}>
+            <span>
+              {formatMessage({ id: `${moduleName}.comments`, defaultMessage: '备注' })}：
+              {record.comments}
+            </span>
+          </div>
+        </Col>
+      </Row>
+    );
+  };
+
+  renderAction = (text, record) => {
+    return (
+      <>
+        <a
+          onClick={e => {
+            e.stopPropagation();
+            this.operAction('export', record);
+          }}
+        >
+          导出
+        </a>
+        <Divider type="vertical" />
+        <MyIcon
+          type="iconedit"
+          title="编辑"
+          onClick={e => {
+            e.stopPropagation();
+            this.operAction('edit', record);
+          }}
+        />
+        <Divider type="vertical" />
+        <Popconfirm
+          title={formatMessage({ id: 'CONFIRM_DELETION', defaultMessage: '是否删除?' })}
+          onConfirm={e => {
+            e.stopPropagation();
+            this.operAction('del', record);
+          }}
+          onCancel={e => {
+            e.stopPropagation();
+          }}
+        >
+          <a onClick={e => e.stopPropagation()} >
+            {formatMessage({ id: 'COMMON_DELETE', defaultMessage: '删除' })}
+          </a>
+        </Popconfirm>
+      </>
+    );
+  }
+
+  operAction = (type, record) => {
+    switch (type) {
+      case 'del':
+        // this.handleDel([record.rowId]);
+        this.handleDel(record.rowId);
+        break;
+      case 'view':
+      case 'edit':
+        this.gotoNext(type, record);
+        break;
+      case 'exprot':
+        this.handleExport([record.rowId]);
+        break;
+      default:
+        break;
+    }
+  };
+
   onBatchMenuClick = ({ key }) => {
     if (!key) return;
     switch (key) {
@@ -327,42 +275,29 @@ class Index extends Base {
 
   batchDel = () => {
     const { selectedRowKeys } = this.state;
-    const {
-      <%=moduleName%>: {
-        listInfo: { list },
-      },
-    } = this.props;
-    const selectedRows = list.filter(item => selectedRowKeys.indexOf(item.rowId) > -1);
-    const isIneligible = selectedRows.some(item => item.tableState != '0');
+    // const selectedRows = list.filter(item => selectedRowKeys.indexOf(item.rowId) > -1);
+    // const isIneligible = selectedRows.some(item => item.statusCd != '0');
+    const isIneligible = false;
     if (isIneligible) {
-      message.warning(
-        `${formatMessage({
-          id: '<%=moduleName%>.batchTips',
-          defaultMessage: '当前批量列表中包含不可操作项，请检查后再次批量操作!',
-        })}`
-      );
+      message.warning(`${formatMessage({ id: `${moduleName}.batchTips`, defaultMessage: '当前批量列表中包含不可操作项，请检查后再次批量操作!' })}`);
     } else {
       Modal.confirm({
-        content: `${formatMessage({
-          id: '<%=moduleName%>.confirmBatch',
-          defaultMessage: '将进行批量删除操作，确定操作？',
-        })}`,
+        content: `${formatMessage({ id: `${moduleName}.confirmBatch`, defaultMessage: '将进行批量删除操作，确定操作？' })}`,
         onOk: () => {
-          const rowIds = selectedRows.map(item => item.rowId).join(',');
-          if (rowIds) {
-            this.handleDelNode(rowIds);
-          }
+          // const rowIds = selectedRows.map(item => item.rowId).join(',');
+          this.handleDel(selectedRowKeys);
         },
       });
     }
   };
 
-  handleDelNode = hostIds => {
+  handleDel = rowIds => {
     const { dispatch } = this.props;
     dispatch({
-      type: '<%=moduleName%>/delNode',
+      type: `${moduleName}/delOne`,
       payload: {
-        hostIds,
+        // ids:rowIds,// TODO: 要考虑批量删除的情况
+        rowId:rowIds,
       },
     }).then(res => {
       const { isSuccess } = res;
@@ -372,50 +307,70 @@ class Index extends Base {
     });
   };
 
-  // ==============ExpandTable组件处理部分======end============== 
-
-  handleSearch = resetFlag => {
-    this.getList(
-      {
-        pageIndex: 1,
-      },
-      resetFlag
-    );
-  };
-
-  goToNext = (key, selectedRow) => {
+  gotoNext = (type, selectedRowNew) => {
+    const { selectedRow, selectedRowDir } = this.state;
+    // if (selectedRowKeys.length == 0) {
+    //   message.warning(`${formatMessage({ id: `${moduleName}。tips`, defaultMessage: '请先选中一项后，才可以进行操作！' })}`);
+    //   return;
+    // }
+    // if (!selectedRowDir || (selectedRowDir && selectedRowDir.compId === -1)) {
+    //   message.warning(`${formatMessage({ id: `${moduleName}。tips`, defaultMessage: '请先选中左侧目录后，才可以进行操作！' })}`);
+    //   return;
+    // }
     const baseProps = {
-      viewType: key,
-      selectedRow,
+      viewType: type,
+      selectedRow: type === 'add' ? undefined : selectedRowNew || selectedRow,
+      selectedRowDir,
     };
-    switch (key) {
-      case 'add': // 新增
-      case 'edit': // 编辑
-      router.push({
-        pathname: '/<%=proName%>/<%=moduleName%>/add',
-        breadcrumb: {
-          name: key === 'add' ? '新增':'编辑',
-        },
-        ...baseProps,
-      });
+    switch (type) {
+      case 'view':
+      case 'add':
+      case 'edit':
+        // this.jumpNext(`${moduleRoute}/add`, type, baseProps)
+        this.setState({ detailModalShow: true, ...baseProps });
         break;
       default:
         break;
     }
   };
 
+  handleExport = rowIds => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: `${moduleName}/export`,
+      payload: {
+        rowIds,
+      },
+    })
+  };
+
+  handleSearch = resetFlag => {
+    this.setState({
+      ...defaultSelected,
+    })
+    this.getList({ pageIndex: 1 }, resetFlag);
+  };
+
+  handleDirSelect = (keys, { node }={}) => {
+    this.setState({ selectedRowDir: !Array.isArray(keys) ? undefined : node.props.dataRef }, () => {
+      this.handleSearch();
+    });
+  };
+
   render() {
     const {
-      <%=moduleName%>: { treeData = [], listInfo },
+      listInfo,
+      common: { staticData: { STATUS_CD = [] }} = {},
       loading,
-      form: { getFieldDecorator },
+      form: { getFieldDecorator, setFieldsValue },
     } = this.props;
-    const { selectList, selectedRow, detailModalShow } = this.state;
+    const { viewType, selectedRow, detailModalShow } = this.state;
 
     const detailModalProps = {
       selectedRow,
+      viewType,
       visible: detailModalShow,
-      title: '详情',
+      title: viewType === 'add' ? '添加' : viewType === 'edit' ? '编辑' : '查看',
       Refs: v => {
         this.DetailModal = v;
       },
@@ -423,8 +378,10 @@ class Index extends Base {
         this.setState({ detailModalShow: false });
       },
       onOk: async () => {
-        const data = this.DetailModal.getRefData();
-        console.log(data);
+        const { isSuccess } = await this.DetailModal.getRefData();
+        if (viewType !== 'view' && isSuccess) {
+          this.getList();
+        }
       }
     };
 
@@ -436,32 +393,28 @@ class Index extends Base {
           <div className={styles.flexSb}>
             <Button
               type="primary"
+              className="margin-right-16"
               onClick={() => {
-                this.goToNext('add');
+                this.gotoNext('card');
               }}
             >
-              添加
+              next
             </Button>
+            <Button type="primary" onClick={() => { this.gotoNext('add'); }} > 
+              添加 
+            </Button>
+            <span/>
           </div>
         </div>
         <div className={styles.main}>
-          <div className={styles.left}>
-            <CategoryTree
-              treeData={treeData}
-              shouldUpdateProps={['treeData']}
-              onSelect={this.handleDirSelect}
-              // menusList={this.menusList}
-              // menuItemClick={this.menuItemClick}
-              // renderSearchIcon={this.renderSearchIcon}
-            />
-          </div>
+          {/* <div className={styles.left}> </div> */}
           <div className={classnames(styles.right)}>
             <CommonFilter
               handleSubmit={() => this.handleSearch()}
               handleReset={() => this.handleSearch(true)}
               onExpanedCallBack={this.handleExpand}
               extra={
-                <Fragment>
+                <>
                   <Button
                     className={classnames('margin-left-10')}
                     type="primary"
@@ -471,61 +424,46 @@ class Index extends Base {
                   >
                     刷新
                   </Button>
-                </Fragment>
+                </>
               }
-            // extraContent={} // 预留AdvancedFilter参数
-            // advancedExtra={ }
-            // advancedItem={[]}
             >
-              <Form.Item
-                {...this.formItemLayout}
-                label={formatMessage({
-                  id: '<%=moduleName%>.type',
-                  defaultMessage: '类型',
-                })}
-              >
+              <Form.Item {...this.formItemLayout} label={formatMessage({id: `${moduleName}.type`,defaultMessage: '类型'})}>
                 {getFieldDecorator('type', {
                   rules: [{ required: false }],
                 })(
-                  <Select allowClear>
-                    {selectList.map(item => {
+                  <Select
+                    style={{ width: 120 }}
+                    allowClear
+                    onChange={value => {
+                      setFieldsValue({ type: value });
+                      this.handleSearch();
+                    }}
+                  >
+                    {STATUS_CD.map(item => {
                       return (
-                        <Select.Option key={item.id} value={item.standCode}>
-                          {item.standDisplayValue}
+                        <Select.Option key={item.value} value={item.value}>
+                          {item.label}
                         </Select.Option>
                       );
                     })}
                   </Select>
                 )}
               </Form.Item>
-              <Form.Item
-                {...this.formItemLayout}
-                label={formatMessage({
-                  id: '<%=moduleName%>.name',
-                  defaultMessage: '名称',
-                })}
-              >
+              <Form.Item {...this.formItemLayout} label={formatMessage({id: `${moduleName}.name`,defaultMessage: '名称',})}>
                 {getFieldDecorator('name')(
                   <Input
-                    // onSearch={() => this.handleSearch()}
-                    // onPressEnter={() => this.handleSearch()}
-                    placeholder={getPlaceholder(
-                      formatMessage({
-                        id: '<%=moduleName%>.name',
-                        defaultMessage: '名称',
-                      })
-                    )}
+                    style={{ width: 120 }}
+                    onSearch={() => this.handleSearch()}
+                    onPressEnter={() => this.handleSearch()}
+                    placeholder={getPlaceholder(formatMessage({id: `${moduleName}.name`,defaultMessage: '名称',}))}
                   />
                 )}
               </Form.Item>
-              <Form.Item
-                {...this.formItemLayout}
-                label={formatMessage({ id: 'taskMgt.timeFilter', defaultMessage: '时间筛选' })}
-              >
+              <Form.Item {...this.formItemLayout} label={formatMessage({ id: `${moduleName}.timeFilter`, defaultMessage: '时间筛选' })}>
                 {getFieldDecorator('timeFilter')(
                   <DatePicker.RangePicker
-                    style={{ minWidth: 200 }}
-                    format="YYYY-MM-DD HH:mm:ss"
+                    style={{ width: 210 }}
+                    format={STR_FORMAT_1}
                     placeholder={[
                       `${formatMessage({ id: 'MAINTAINMGR_FROM' })}`,
                       `${formatMessage({ id: 'MAINTAINMGR_TO' })}`,
@@ -540,32 +478,48 @@ class Index extends Base {
               <ExpandTable
                 rowKey="rowId"
                 data={listInfo}
-                canExpand={false}
                 loading={loading}
-                // noTablePaddingH={false}
                 columns={this.getColumns()}
                 onChange={this.pageOnChange}
                 filterChange={this.filterChange}
-                canSelect={false} // 为了简单示范，屏蔽多选功能
+                canSelect={false} 
                 footerRender={this.renderFooter}
-                allCheckedChange={(keys, selectedRows) => {
-                  this.setState({
-                    selectedRowKeys: selectedRows.map(o => o.rowId),
-                  });
-                }}
-                onSelectRow={(rows, selectedRowKeys) => {
-                  this.setState({
-                    selectedRowKeys,
-                  });
+                canExpand={false}
+                ref={v => {
+                  this.ExpandTable = v;
                 }}
                 onRow={record => ({
                   onClick: () => {
                     this.setState({ selectedRow: record });
                   },
                 })}
-                ref={v => {
-                  this.ExpandTable = v;
+                onSelectRow={(rows, keys) => {
+                  this.setState({ selectedRows:rows, selectedRowKeys:keys });
                 }}
+                allCheckedChange={(keys, rows) => {
+                  this.setState({ selectedRows:rows, selectedRowKeys:keys });
+                }}
+                // expandedRowRender={this.expandedRowRender}
+                // noTablePaddingH={false}
+                // scroll={{ y: 500 }}
+                // setScrollY={false}
+                // showFoot={false} //是否显示分页
+                // footerRender={null}
+                // showPagination={false} // 不显示分页,可以显示左边全选
+                // rowSelection={{ // radio单选
+                //   type: 'radio',
+                //   selectedRowKeys,
+                //   onChange: keys => {
+                //     this.setState({ selectedRowKeys: keys });
+                //   },
+                // }}
+                // data={{
+                //   pagination: { // 处理分页的方式
+                //     ...listInfoIndex.pagination,
+                //     showQuickJumper: false,
+                //     showSizeChanger: false,
+                //   },
+                // }}
               />
             </div>
           </div>
