@@ -3,7 +3,7 @@
  * @email: <%=email%>
  * @time: <%=time%>
  * @modAuthor: samy
- * @modTime: 2021-01-29 16:24:37
+ * @modTime: 2021-01-29 16:38:54
  * @desc: <%=name%>页面(by cli)
  * @Copyright © 2015~2021 BDP FE
  */
@@ -14,7 +14,7 @@ import { getPlaceholder } from '@/bdpcloud/utils/utils';
 import classnames from 'classnames';
 import { Form, Input, Button, Select, Divider, Popconfirm, Tag, DatePicker, message, Modal, Row, Col} from 'antd';
 import { moduleName } from '../conf/constant';
-import { Base, DetailModal, ExpandTable, MyIcon, CommonFilter, BatchButton } from './components';
+import { Base, ExpandTable, MyIcon, CommonFilter, BatchButton, DetailModal, } from './components';
 import styles from './index.less';
 import { formatDate, STR_FORMAT_1 } from '@<%=proName%>/utils/time';
 
@@ -501,6 +501,7 @@ class Index extends Base {
                 // noTablePaddingH={false}
                 // scroll={{ y: 500 }}
                 // setScrollY={false}
+                // showHeader={false} //是否显示头部
                 // showFoot={false} //是否显示分页
                 // footerRender={null}
                 // showPagination={false} // 不显示分页,可以显示左边全选
