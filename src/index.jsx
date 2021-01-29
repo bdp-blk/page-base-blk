@@ -1,9 +1,11 @@
-/**
- * @author samy
- * @email samyzhg#qq.com
- * @create date 2020-08-06 20:57:45
- * @modify date 2020-08-06 20:57:45
- * @desc <%=name%>页面(by cli)
+/*
+ * @Author: <%=author%>
+ * @email: <%=email%>
+ * @time: <%=time%>
+ * @modAuthor: samy
+ * @modTime: 2021-01-29 16:24:37
+ * @desc: <%=name%>页面(by cli)
+ * @Copyright © 2015~2021 BDP FE
  */
 import React from 'react';
 import { connect } from 'dva';

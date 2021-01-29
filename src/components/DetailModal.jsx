@@ -1,9 +1,11 @@
-/**
- * @author samy
- * @email samyzhg#qq.com
- * @create date 2020-08-10 19:49:57
- * @modify date 2020-08-10 19:49:57
- * @desc <%=name%>页面详情(by cli)
+/*
+ * @Author: <%=author%>
+ * @email: <%=email%>
+ * @time: <%=time%>
+ * @modAuthor: samy
+ * @modTime: 2021-01-29 16:24:51
+ * @desc: <%=name%>页面详情(by cli)
+ * @Copyright © 2015~2021 BDP FE
  */
 import React from 'react';
 import { Modal } from 'antd';
